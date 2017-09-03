@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!--Step:1 Import a module loader, such as esl.js or require.js-->
+    <!--Step:1 引入一个模块加载器，如esl.js或者require.js-->
+    <script src="js/esl.js"></script>
+   <script type="text/javascript">
+   	var geoCoordMap = {
+			"瑶海区":[117.331224,31.905375],
+"庐阳区":[117.247835,31.912901],
+"蜀山区":[117.23128 ,31.838185 ],
+"合肥经济技术开发区":[117.282699,31.866942],
+"包河区":[117.353913,31.790724],
+"长丰县":[117.174438,32.286111],
+"肥东县":[117.575857,32.003189],
+"肥西县":[117.036261,31.732638]
+		};
+   	function test(){
+   		setValue();
+   	  
+   	    js_method(0);
+   	 }
+   	 ////////////////
+   	var myarr=[['#1e90ff','#10ffff'],['#FFB6C1','#1e90ff'], ['#4B0082','#1e90ff'],['#40E0D0','#10ffff'],['#10ffff','#FFFF00'],['#1e90ff','#F4A460']];
+   	var myColor=['#1e90ff','#10ffff'];
+   	var addressArr =["瑶海区","庐阳区","蜀山区","合肥经济技术开发区","包河区","长丰县","肥东县","肥西县"];
+	   var valsStart=[];//随机数据
+	 var tops=["瑶海区","庐阳区","蜀山区","合肥经济技术开发区","包河区","长丰县"];
+	   
+	   function des(a,b){//降序排列
+			  return b-a;
+			}
+			
+			function setTop(){//动态获取前6位
+				for(var i=1;i<=tops.length;i++){
+	   	  	 document.getElementById("top"+i).innerHTML = tops[i-1] + "<br />指标得分："+ valsStart[i-1] +"<br />指标排名："+ i ;
+	   	  }
+			}
+
+	 	 function setValue(){
+	 	 	  for(var i=1;i <= 8;i++){
+	 	  	 valsStart[i-1] =  Math.round(Math.random()*1000);
+	 	  }
+	 	  valsStart.sort(des);
+	 	  console.log(valsStart);
+	 	 }
+	 	 
+	 	 	var mydata=[
+									{name:'瑶海区',value:valsStart[0]},
+									{name:'庐阳区',value:valsStart[1]},
+									{name:'蜀山区',value:valsStart[2]},
+									{name:'合肥经济技术开发区',value:valsStart[3]},
+									{name:'包河区',value:valsStart[4]},
+									{name:'长丰县',value:valsStart[5]},
+									{name:'肥东县',value:valsStart[6]},
+									{name:'肥西县',value:valsStart[7]}
+              ]
+   	/////////////////////////////
+   	function js_method(num) {
+   		setValue();
+   		setTop();
+   		myColor=myarr[num];
+   		  	var option={
+    		  title : {
+						        text: '合肥市',
+					//	        subtext: '纯属虚构',
+						        x:'center'
+						    },
+                tooltip : {
+                    trigger: 'item',
+                   // formatter: '{b}'
+                   
+                    formatter : function (params) {
+                    	console.log(params);
+                    	
+                    	  var pname = params[1];
+						            var value = params[2];
+						            var rank = addressArr.indexOf(pname)+1;//指标排名
+						            
+						            return  pname + '<br/>指标得分：' + value + '<br/>指标得分：' + rank;
+						            
+						        }
+						        
+                    
+                }, 
+                 dataRange: {
+						        min: 0,
+						        max: 1000,
+						        padding:10,
+						        orient:'horizontal',
+						        x: 'left',
+						        y: 'bottom',
+						        text:['高','低'],           // 文本，默认为数值文本
+						        color:myColor,
+						        calculable : true
+						    },  
+						    roamController: {
+						        show: true,
+						        x: 'right',
+						        mapTypeControl: {
+						            '安徽|合肥市': true
+						        }
+						    },     
+                series : [
+                    {
+                        name: '安徽',
+                        type: 'map',
+                        mapType: '安徽|合肥市',
+                        hoverable: false,
+                        roam:true,
+                        mapLocation: {height:'90%'},
+                        data : [],
+						            markPoint : {
+						                symbolSize: 5,       // 标注大小，半宽（半径）参数，当图形为方向或菱形则总宽度为symbolSize * 2
+						                itemStyle: {
+						                    normal: {
+						                        borderColor: '#87cefa',
+						                        borderWidth: 1,            // 标注边线线宽，单位px，默认为1
+						                        label: {
+						                            show: false
+						                        }
+						                    },
+						                    emphasis: {
+						                        borderColor: '#1e90ff',
+						                        borderWidth: 5,
+						                        label: {
+						                            show: false
+						                        }
+						                    }
+						                },
+                            data:[
+																		{name:'瑶海区',value:valsStart[0]},
+									{name:'庐阳区',value:valsStart[1]},
+									{name:'蜀山区',value:valsStart[2]},
+									{name:'合肥经济技术开发区',value:valsStart[3]},
+									{name:'包河区',value:valsStart[4]},
+									{name:'长丰县',value:valsStart[5]},
+									{name:'肥东县',value:valsStart[6]},
+									{name:'肥西县',value:valsStart[7]}
+									              ]
+                            },
+                            geoCoord:geoCoordMap
+                     },
+                     {
+                     	   name: 'Top6',
+							            type: 'map',
+							            mapType: '安徽|合肥市',
+							            data:[],
+							            markPoint : {
+							                symbol:'emptyCircle',
+							                symbolSize : function (v){
+							                    return 10 + v/100
+							                },
+							                effect : {
+							                    show: true,
+							                    shadowBlur : 0
+							                },
+							                itemStyle:{
+							                    normal:{
+							                        label:{show:false}
+							                    }
+							                },
+							                data : [
+							                    {name:'瑶海区',value:valsStart[0]},
+																	{name:'庐阳区',value:valsStart[1]},
+																	{name:'蜀山区',value:valsStart[2]},
+																	{name:'合肥经济技术开发区',value:valsStart[3]},
+																	{name:'包河区',value:valsStart[4]},
+																	{name:'长丰县',value:valsStart[5]}
+							                ]
+                            
+                      }
+                    }
+                ]
+            };
+    // Step:3 conifg ECharts's path, link to echarts.js from current page.
+    // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+    require.config({
+        paths:{ 
+            echarts:'./js/echarts',
+            'echarts/chart/bar' : './js/echarts-map',
+            'echarts/chart/line': './js/echarts-map',
+            'echarts/chart/map' : './js/echarts-map'
+        }
+    });
+    
+    // Step:4 require echarts and use it in the callback.
+    // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar',
+            'echarts/chart/line',
+            'echarts/chart/map'
+        ],
+        function(ec) {
+   
+            // --- 地图 ---
+            var myChart2 = ec.init(document.getElementById('mainMap'));
+            myChart2.setOption(option);
+        }
+    );
+   	} 
+   	//////////////////////////////////////
+   
+   	</script>
+</head>
+
+<body onload="test()"> 
+    <!--Step:2 Prepare a dom for ECharts which (must) has size (width & hight)-->
+    <!--Step:2 为ECharts准备一个具备大小（宽高）的Dom-->
+   <!-- <div id="main" style="height:500px;border:1px solid #ccc;padding:10px;"></div>-->
+     
+      <table border="0" bordercolor="red" width="100%" height=100%>
+      	<tr>
+      		<td width="20%" align="right" >
+      			<div id="top1" style="border:none;font-size:8px;"></div>
+      		</td>
+      		<td rowspan="3" width="35%"><div id="mainMap" style="height:600px;border:none;"></div></td>
+      		<td width="20%"><div id="top4" style="border:none;font-size:8px;"></div></td>
+      		<td rowspan="3" width="25%">
+      			<div id="menua" style="height:500px;border:none;font-size:8px;">
+      				<a href="javascript:void(0);" onclick="js_method(0)">- - 门诊收入占医疗收入比重</a><br />
+      				<a href="javascript:void(0);" onclick="js_method(1)">- - 医疗费用增长</a><br />
+    					<a href="javascript:void(0);" onclick="js_method(2)">- - 门诊病人次均医药费用</a><br />
+    					<a href="javascript:void(0);" onclick="js_method(3)">- - 门诊病人次均医药费用增幅</a><br />
+    					<a href="javascript:void(0);" onclick="js_method(4)">- - 住院病人次均医药费用</a><br />
+    					<a href="javascript:void(0);" onclick="js_method(5)">- - 住院病人次均医药费用增幅</a><br />
+    					
+      			</div></td>
+      	</tr>
+      	<tr>
+      		<td  align="right"><div id="top2" style="border:none;font-size:8px;"></div></td>
+      		<td><div id="top5" style="border:none;font-size:8px;"></div></td>
+        </tr>
+      	<tr>
+      		<td  align="right"><div id="top3" style="border:none;font-size:8px;"></div></td>
+      		<td>
+      			<div id="top6" style="border:none;font-size:8px;">
+      				
+      			</div>
+      		</td>
+      	</tr>
+      </table>
+  
+      
+  </table>
+    
+    <script type="text/javascript">
+  
+    </script>
+</body>
+</html>
